@@ -15,18 +15,19 @@ editor: visual
 -   Five blocks
 
 ## Total number of possible choice set
-(3*4*2*10)^2
-= 57 600
+
+(3\*4\*2\*10)\^2 = 57 600
 
 ## Blocks
-They had 10 blocks (in two different groups).
-In one group of blocks they kept spatial unit (combination of spatial scale and location) constant, in the other group they kept the change in environmental status constant. Each respondent got assigned to 2 blocks, either in spatial or the environmental category. 
+
+They had 10 blocks (in two different groups). In one group of blocks they kept spatial unit (combination of spatial scale and location) constant, in the other group they kept the change in environmental status constant. Each respondent got assigned to 2 blocks, either in spatial or the environmental category.
 
 ### Spatial unit constant (5 blocks):
-* Single watershed + Policy area includes home watershed (local)
-* Single watershed + Policy area does not includes home watershed (non-local)
-* Three contiguous watersheds + Policy area includes home watershed (local)
-* Three contiguous watersheds + Policy area does not includes home watershed (non-local)
-* Full study region (including home)
+
+-   Single watershed + Policy area includes home watershed (local)
+-   Single watershed + Policy area does not includes home watershed (non-local)
+-   Three contiguous watersheds + Policy area includes home watershed (local)
+-   Three contiguous watersheds + Policy area does not includes home watershed (non-local)
+-   Full study region (including home)
 
 ### BCG level change (4 blocks)
