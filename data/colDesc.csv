@@ -1,0 +1,158 @@
+﻿RespondentID;Unique respondent identifer
+WEIGHT;Post-stratification weights - 18+ general population in selected FIPs (N=2,000)
+P3_Voted_WouldPay;I voted as if my household would face the stated costs
+P3_Voted_AsInElection;I am certain that I voted the same way I would if I were voting in a public elec
+P3_Voted_Independent;I voted on each proposal without any consideration of the other proposals
+P3_Voted_OutcomeAchieved;I voted as if the policies would achieve the stated improvements ...
+P3_Voted_InformPolicy;I voted as if the information collected ... will be used to inform policy makers
+P3_Importance_Cost;The cost of the policy in additional taxes
+P3_Importance_Size;The size of the region affected by the policy
+P3_Importance_Local;Whether the policy improved water quality near my home
+P3_Importance_WQ;Improvements in the water quality level
+P4_Env_Org;Are you currently a member of an environmental organization?
+P4_Residency_Cat;How long has your household been living at its current address?
+P4_Years_Residence;Years at current address
+P4_ConsiderWQ;When you decided to live in your current house or apartment, did you consider th
+P4_ConsiderDrinkingWater;When you decided to live in your current house or apartment, did you consider t
+P4_Recreation_Trips;In a typical year, do you take one or more trips to visit streams, rivers, or la
+P4_FarthestTrip_Cat;In a typical year, what is the farthest you travel (one way) with the main purpo
+P4_FarthestTrip;"In a typical year, farthest travel for recreation (miles); =0 if no trips"
+P4_RecentTrip;Please think about your most recent trip to a stream, river, or lake. What did y
+P4_Trip_Activities;On this trip which activities did you do? Please select all that apply. - Selec
+P4_Trip_Activities_Fishing;=1 if selected 'Fishing'
+P4_Trip_Activities_Motor;=1 if selected 'Motorized boating'
+P4_Trip_Activities_Wildlife;=1 if selected 'Wildlife watching'
+P4_Trip_Activities_Boating;=1 if selected 'Non-motorized boating'
+P4_Trip_Activities_Swimming;=1 if selected 'Swimming'
+P4_Trip_Activities_Walking;=1 if selected 'Walking, running, and/or cycling near the shore'
+P4_Trip_Activities_Relaxing;=1 if selected 'Relaxing near the shore'
+P4_Trip_Activities_Other;=1 if selected 'Other (please specify)'
+P4_Trip_Activities_Other_TEXT;Open-ended response to 'Other (please specify)'
+P4_RecentTrip_HowFar;On this trip, how far did you travel to get there (one way)?
+P4_RecentTrip_BCG;Using the level 1 (natural state) to level 6 (extreme degradation) categories, h
+P4_RecentTrip_WQImportance;In deciding where to go on this recent trip, how important was water quality to
+Q_Female;0 Male, 1 Female
+Q_Age;Respondent's age, in years
+Q_Age_4Cat;Age categories: 1 18-29, 2 30-44, 3 45-59, 4 60+
+Q_Age_7Cat;Age categores: 1 18-24, 2 25-34, 3 35-44, 4 45-54, etc.
+Q_Race;Combined Race/Ethnicity
+Q_Educ_Cat;"Respondent's education: 1 &lt; H.S., 2 HS grad, 3 Vocational, 4 BA/BS, 5 post-grad'"
+Q_HighSchool;=1 if H.S. education or higher
+Q_Bachelors;=1 if Bachelors degree or higher
+Q_Marital_Cat;Marital Status
+Q_Married;"=1 if married; =0 otherwise"
+Q_Employ_Cat;Current employment status
+Q_Employed;=1 if currently employed, =0 otherwise
+Q_Retired;=1 if currently retired, =0 otherwise
+Q_Income_Cat;"Household income; selected category'"
+Q_Income;"Respondent's income, in $1000s; midpoint of selected category"
+Q_Income_4Cat;4-level Household Income
+Q_Income_9Cat;9-level Household Income
+Q_Metro;"=1 if living in metropolitan area; =0 otherwise"
+Q_Internet;=1 if household has internet via dial-up, DSL, or cable
+Q_Housing_Cat;Home Owndership: 1 owned, 2 rented for cash, 3 occupied without payment
+Q_Own_Home;"=1 for home ownership; =0 otherwise"
+Q_Home_Type;Type of building of panelists' residence
+Q_PhoneService_Cat;Telephone service for the household
+Q_HHsize;Household size (including children)
+Q_HH01;Number of HH members age 0-1
+Q_HH25;Number of HH members age 2-5
+Q_HH612;Number of HH members age 6-12
+Q_HH1317;Number of HH members age 13-17
+Q_Children;Number of HH members aged 0 to 17
+Q_Adults;Number of HH members age 18+
+RecordedDate;Recorded Date
+BlockType;"=1 for varying WQ blocks; =2 for varying spatial unit blocks"
+Counter;Number of scenarios voted on by respondent, 6 to 10
+HUC4;4-digit HUC containing respondent's residence
+HUC4_NL;assigned HUC4 for non-local HUC4 scenarios
+HUC4Area;Land area, in square miles, for local HUC4
+HUC4Area_NL;Land area, in square miles for non-local HUC4 scenarios
+HUC4BCG_1up;Average BCG score in home HUC4, 1up scenario
+HUC4BCG_1up_NL;Average BCG score in nonlocal HUC4, 1up scenario
+HUC4BCG_base;Average BCG score in home HUC4, baseline
+HUC4BCG_base_NL;Average BCG score in nonlocal HUC4, baseline
+HUC4BCG_scenario1;Average BCG score in home HUC4, scenario1
+HUC4BCG_scenario1_NL;Average BCG score in nonlocal HUC4, scenario1
+HUC4BCG_scenario2;Average BCG score in home HUC4, scenario2
+HUC4BCG_scenario2_NL;Average BCG score in nonlocal HUC4, scenario2
+HUC4BCG_scenario3;Average BCG score in home HUC4, scenario3
+HUC4BCG_scenario3_NL;Average BCG score in nonlocal HUC4, scenario3
+HUC8;8-digit HUC containing respondent's residence
+HUC8Area;Land area, in square miles for local HUC8
+HUC8BCG;BCG score for respondent's home HUC8
+HUC8BCG_1up;Average BCG score in home HUC4, (local) 1up scenario
+HUC8BCG_base;BCG score for respondent's home HUC8, baseline
+HUC8BCG_scenario1;Average BCG score in home HUC8, scenario1
+HUC8BCG_scenario2;Average BCG score in home HUC8, scenario2
+HUC8BCG_scenario3;Average BCG score in home HUC8, scenario3
+Medium;"ID for local medium grouping; 1 to 10"
+Medium_NL;"ID for non-local medium grouping; 1 to 10"
+MediumArea;Land area, in square miles, for medium grouping
+MediumArea_NL;Land area, in square miles, for non-local Medium sceanrios
+MediumBCG_1up;Average BCG score in Medium area, (local) 1up scenario
+MediumBCG_1up_NL;Average BCG score in Medium area, (local) 1up scenario
+MediumBCG_base;Average BCG score in Medium area, baseline
+MediumBCG_base_NL;Average BCG score in Medium area, baseline
+MediumBCG_scenario1;Average BCG score in local Medium area, scenario1
+MediumBCG_scenario1_NL;Average BCG score in nonlocal Medium area, scenario1
+MediumBCG_scenario2;Average BCG score in local Medium area, scenario2
+MediumBCG_scenario2_NL;Average BCG score in nonlocal Medium area, scenario2
+MediumBCG_scenario3;Average BCG score in local Medium area, scenario3
+MediumBCG_scenario3_NL;Average BCG score in nonlocal Medium area, scenario3
+RedundantFlag;Used to skip redundant local scenarios in survey
+RedundantFlag_NL;Used to skip redundant non-local scenarios in survey
+Counter_Block1;Number of referenda voted on in first block, 1 to 5
+Home_State;Two-digit State ID code
+PercentInstate;For local HUC4 scenarios, % of land in-state
+PercentInstate_NL;For non-local HUC4 scenarios, % of land in-state
+PercentInstate_Medium_NL;For non-local medium scenarios, % of land in-state
+PercentInstate_Medium;For local Medium scenarios, % of land in-state
+Distance;Distance (miles) between zipcode and local HUC4
+Distance_NL;Distance (miles) between zipcode and non-local HUC4
+Referendum;"Valuation scenario as defined by Spatial_Unit and WQ change; 1 to 20"
+Cost;Cost to household for policy scenario
+Vote;"=1 for 'yes' vote; =0 for 'no' vote"
+Order;Order in which respondent voted on referendum, 1 to 10
+Block1;"=1 if referendum part of first block faced; =0 otherwise"
+ChoiceID;ID number unique to choice set and respondent
+SQ;=1 if status quo option
+ASC;=1 if policy alternative (i.e., alternative specific constant)
+Ncost;Negative of the variable 'Cost'
+Spatial_Unit;1 local HUC4, 2 local Medium, 3 Full area, 4 non-local HUC4, 5 non-local Medium
+NL;"=1 for non-local change scenario; =1 if Spatial_Unit=4 or 5"
+ASC_PercentInstate;'ASC' x 'PercentInstate'
+ASC_PercentInstate_NL;'ASC' x 'PercentInstate_NL'
+WQ_HUC8;"Water quality in local subwatershed; attribute in DCE"
+WQ_HUC4;"Water quality (BCG) in local watershed; attribute in DCE"
+WQ_Medium;"Water quality (BCG) in local 'medium' area; attribute in DCE"
+WQ_Large;"Water quality (BCG) in full study area; attribute in DCE"
+WQ_HUC4_NL;"Water quality (BCG) in non-local watershed; attribute in DCE"
+WQ_Medium_NL;"Water quality (BCG) in non-local 'medium' area; attribute in DCE"
+Q_Educ_1;Q_Educ_Cat==Less than HS
+Q_Educ_2;Q_Educ_Cat==HS graduate or equivalent
+Q_Educ_3;Q_Educ_Cat==Vocational/tech school/some college/ associates
+Q_Educ_4;Q_Educ_Cat==Bachelor's degree
+Q_Educ_5;Q_Educ_Cat==Post grad study/professional degree
+Q_Race_1;Q_Race==White non-Hispanic
+Q_Race_2;Q_Race==Black non-Hispanic
+Q_Race_3;Q_Race==Asian non-Hispanic
+Q_Race_4;Q_Race==Other non-Hispanic
+Q_Race_5;Q_Race==2 or more races non-Hispanic
+Q_Race_6;Q_Race==Hispanic
+ASC_Q_Female;Interaction between ASC and Q_Female
+ASC_Q_Age;Interaction between ASC and Q_Age
+ASC_Q_Educ_2;Interaction between ASC and Q_Educ_2
+ASC_Q_Educ_3;Interaction between ASC and Q_Educ_3
+ASC_Q_Educ_4;Interaction between ASC and Q_Educ_4
+ASC_Q_Educ_5;Interaction between ASC and Q_Educ_5
+ASC_Q_Race_2;Interaction between ASC and Q_Race_2
+ASC_Q_Race_3;Interaction between ASC and Q_Race_3
+ASC_Q_Race_4;Interaction between ASC and Q_Race_4
+ASC_Q_Race_5;Interaction between ASC and Q_Race_5
+ASC_Q_Race_6;Interaction between ASC and Q_Race_6
+ASC_Q_Married;Interaction between ASC and Q_Married
+ASC_Q_Retired;Interaction between ASC and Q_Retired
+ASC_Q_Income;Interaction between ASC and Q_Income
+ASC_Q_Metro;Interaction between ASC and Q_Metro
+ASC_Q_HHsize;Interaction between ASC and Q_HHsize

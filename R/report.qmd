@@ -22,12 +22,54 @@ editor: visual
 
 They had 10 blocks (in two different groups). In one group of blocks they kept spatial unit (combination of spatial scale and location) constant, in the other group they kept the change in environmental status constant. Each respondent got assigned to 2 blocks, either in spatial or the environmental category.
 
-### Spatial unit constant (5 blocks):
+## Explanations of blocks and referendums
 
--   Single watershed + Policy area includes home watershed (local)
--   Single watershed + Policy area does not includes home watershed (non-local)
--   Three contiguous watersheds + Policy area includes home watershed (local)
--   Three contiguous watersheds + Policy area does not includes home watershed (non-local)
--   Full study region (including home)
+### BlockType
 
-### BCG level change (4 blocks)
+1 = "Spatial unit block", Fixed spatial unit, varying BCG(WQ) change scenarios (6-8 proposals per respondent)
+
+2 = "BCG Change block" Fixed BCG(WQ) change scenarios, varying spatial units (8-10 proposals per respondent)
+
+### Spatial_Unit (combination of attributes "Spatial scale" and "Location":
+
+1 = Local, HUC4 (Single watershed)\
+2 = Local, Medium (Three watersheds)\
+3 = Full area (Full study region)\
+4 = Non-local, HUC4 (Single watershed)\
+5 = Non-local, Medium (Three watersheds)
+
+### BCG change:
+
+-   1up
+
+-   Scenario 1
+
+-   Scenario 2
+
+-   Scenario 3
+
+### Referendum: 
+
+| Referendum | Spatial unit                         | BCG change |
+|------------|--------------------------------------|------------|
+| 1          | Local, HUC4 (Single watershed)       | 1 up       |
+| 2          | Local, HUC4 (Single watershed)       | Scenario 1 |
+| 3          | Local, HUC4 (Single watershed)       | Scenario 2 |
+| 4          | Local, HUC4 (Single watershed)       | Scenario 3 |
+| 5          | Local, Medium (Three watersheds)     | 1 up       |
+| 6          | Local, Medium (Three watersheds)     | Scenario 1 |
+| 7          | Local, Medium (Three watersheds)     | Scenario 2 |
+| 8          | Local, Medium (Three watersheds)     | Scenario 3 |
+| 9          | Full area (Full study region)        | 1 up       |
+| 10         | Full area (Full study region)        | Scenario 1 |
+| 11         | Full area (Full study region)        | Scenario 2 |
+| 12         | Full area (Full study region)        | Scenario 3 |
+| 13         | Non-local, HUC4 (Single watershed)   | 1 up       |
+| 14         | Non-local, HUC4 (Single watershed)   | Scenario 1 |
+| 15         | Non-local, HUC4 (Single watershed)   | Scenario 2 |
+| 16         | Non-local, HUC4 (Single watershed)   | Scenario 3 |
+| 17         | Non-local, Medium (Three watersheds) | 1 up       |
+| 18         | Non-local, Medium (Three watersheds) | Scenario 1 |
+| 19         | Non-local, Medium (Three watersheds) | Scenario 2 |
+| 20         | Non-local, Medium (Three watersheds) | Scenario 3 |
+|            |                                      |            |

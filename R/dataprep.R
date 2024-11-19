@@ -1,22 +1,30 @@
 library(data.table)
 
+## Read data
 data <- fread("data/dataVossler.tab")
-head(data[, .N , by = c("RespondentID", "ChoiceID")], 40)
-data[, .N , by = c("BlockType", "Spatial_Unit", "NL","ASC")]
-data[, .N , by = c("BlockType", "Spatial_Unit", "NL", "Cost", "ASC", "Referendum")]
-data[, .N , by = c("BlockType", "Spatial_Unit", "NL")]
+## Read column descriptions
+colDesc <- fread("data/colDesc.csv")
 
-data$WQ_HUC8_b <- ifelse(data$WQ_HUC8 == 0, 0, 1)
-data$WQ_HUC4_b <- ifelse(data$WQ_HUC4 == 0, 0, 1)
-data$WQ_Medium_b <- ifelse(data$WQ_Medium == 0, 0, 1)
-data$WQ_Large_b <- ifelse(data$WQ_Large == 0, 0, 1)
+head(data[, .N , by = c("RespondentID", "ChoiceID", "Referendum", "ASC", "Vote")], 40)
 
+## Trying to understand blocks and counters etc
+View(
+  data[RespondentID %in% c(1,2), c(
+  "RespondentID", "BlockType", "Counter", "Counter_Block1", "ASC",
+  "Spatial_Unit", "NL", "Referendum", "Vote" #"Cost",
+  #"WQ_HUC4", "WQ_Medium", "WQ_Large",
+  #"WQ_HUC4_NL", "WQ_Medium_NL"
+  )]
+)
+
+## How many respondents got to vote for each referendum
+data[, .(n_respondents = length(unique(RespondentID[!is.na(Vote)]))), by = c(
+  "Spatial_Unit", "Referendum")]
+
+## Different possible combinations of attribute levels
 combos <- 
-data[, .N , by = c(
-  "BlockType", "ASC",
-  "Spatial_Unit", "NL", "Cost",
-  "WQ_HUC4_b", "WQ_Medium_b", "WQ_Large_b")]
+data[ASC == 1, .(n_respondents = length(unique(RespondentID[!is.na(Vote)]))), by = c(
+  "Cost",
+  "Spatial_Unit", "Referendum")]
 
-
-colnames(data)
-unique(data$WQ_HUC4)
+combos <- combos[order(Referendum, Cost)]
