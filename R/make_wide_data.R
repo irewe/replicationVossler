@@ -9,7 +9,7 @@ data <- data[!is.na(Vote), c(
   "WQ_Medium", "WQ_Large", "WQ_HUC4_NL", "WQ_Medium_NL")]
 
 data <- data[order(ChoiceID, ASC)]
-
+### show the dataframe again
 data
 
 data_wide <- dcast(
