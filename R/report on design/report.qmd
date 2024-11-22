@@ -1,22 +1,28 @@
 ---
-title: "Excercise1"
+title: "Design analysis"
 format: pdf
 editor: visual
 ---
 
 ## Report no. of alternatives, attributes, levels, block
 
--   2 alternatives for each choice set
+-   2 alternatives for each choice set (current status & environmental change referendum)
 
 -   4 attributes (spatial scale, BCG change scenario, Location, annual tax increase)
 
--   Levels per attribute: (3, 4, 2, 10)
+-   Levels per attribute: (3, 4, 2, \~10)
 
--   Five blocks
+-   2 block types...
 
-## Total number of possible choice set
+## Total number of possible choice set (full factorial)
 
-(3\*4\*2\*10)\^2 = 57 600
+(3\*4\*2\*10) = 240
+
+The cost was assigned randomly when they performed the survey, therefore:
+
+3\*4\*2 = 24 possible choice sets in the design phase\
+\
+(Only one alternative in each choice set, because it is always a choice between current status and one Referendum)
 
 ## Blocks
 
@@ -48,7 +54,7 @@ They had 10 blocks (in two different groups). In one group of blocks they kept s
 
 -   Scenario 3
 
-### Referendum: 
+### Referendum:
 
 | Referendum | Spatial unit                         | BCG change |
 |------------|--------------------------------------|------------|

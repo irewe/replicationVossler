@@ -2,7 +2,7 @@
 
 rm(list=ls())
 library(data.table)
-database<-fread("C:/Users/amatom/Downloads/dataVossler_wide.csv")
+database<-fread("data/dataVossler_wide.csv")
 library("readr")
 library("psych")
 library("evd")          
