@@ -3,10 +3,9 @@
 rm(list=ls())
 
 library(readxl)
-
 # Correct file path with forward slashes or escaped backslashes
-file_path <- "C:/Users/louiemarie/OneDrive/Desktop/PhD/Course Materials/dce/DCEreplication/Data/dataVossler_wide.xlsx"
-database <- read_excel(file_path)
+library(data.table)
+database<-fread("data/dataVossler_wide.csv")
 library("readr")
 library("psych")
 library("evd")          

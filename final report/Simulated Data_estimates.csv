@@ -1,0 +1,16 @@
+"","Estimate","Std.err.","t-ratio(0)","Rob.std.err.","Rob.t-ratio(0)"
+"b_cost",-0.00605565814752647,NA,NA,NA,NA
+"meanasc_1",0.181315257169135,NA,NA,NA,NA
+"mean_wqhuc8",-0.739750845218804,NA,NA,NA,NA
+"mean_wqhuc4",-0.995285637666999,NA,NA,NA,NA
+"mean_wmed",-0.911352516141309,NA,NA,NA,NA
+"mean_wlar",-0.900097272389288,NA,NA,NA,NA
+"mean_wq4nl",-0.819530661605426,NA,NA,NA,NA
+"mean_wmednl",-0.949818619985781,NA,NA,NA,NA
+"sigmaasc_1",1.57772453119148,NA,NA,NA,NA
+"sigma_wqhuc8",-0.986726814713121,NA,NA,NA,NA
+"sigma_wqhuc4",-0.658518770661106,NA,NA,NA,NA
+"sigma_wmed",0.0842234338486683,NA,NA,NA,NA
+"sigma_wlar",-0.171820048607257,NA,NA,NA,NA
+"sigma_wq4nl",-0.680054468084358,NA,NA,NA,NA
+"sigma_wmednl",-1.25687181071817,NA,NA,NA,NA

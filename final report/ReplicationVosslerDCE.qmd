@@ -1,0 +1,481 @@
+---
+title: "Replication Vossler DCE"
+format: html
+editor: visual
+---
+
+# Introduction
+
+This is a replication of models from Vossler et al. 2023, "Valuing improvements in the ecological integrity of local andregional waters using the biological condition gradient".
+
+# Replication process
+
+## Data preparation
+
+We first read the data that they used in their model.
+
+```{r}
+library(data.table)
+data <- fread("../data/dataVossler.tab")
+colnames(data)
+head(data[RespondentID %in% c(1), c("RespondentID", "ChoiceID", "Referendum", "Vote", "ASC")], 40)[order(ChoiceID)]
+```
+
+As seen above, the data have a lot of variables and for each respondent there are two rows for each possible Referendum, one for the "current state scenario" (ASC = 0) and one for the proposed referendum (ASC = 1). If the respondent did get a certain Referendum as an option, then the column "Vote" will not be NA. So first we remove rows where Vote is NA. Then we make the data wide so that for each ChoiceID (which is unique per choice set and respondent) we have two sets of the attribute columns: first for the current state scenario (ASC = 0) and then for the proposed referendum in that choice set (ASC = 1). We only keep the variables that we use in the models that we replicated.
+
+```{r}
+
+data <- data[!is.na(Vote)]
+data <- data[order(ChoiceID, ASC)]
+
+data <- data[order(ChoiceID, ASC)]
+
+## Make wide format
+data_wide <- dcast(
+  data,
+  ChoiceID + RespondentID + Referendum +
+  HUC8BCG + HUC4BCG_base + HUC4BCG_scenario1 +
+  HUC4BCG_scenario2 + MediumBCG_base + MediumBCG_scenario1 +
+  MediumBCG_scenario2 + HUC4BCG_base_NL + HUC4BCG_scenario2_NL +
+  MediumBCG_base_NL + MediumBCG_scenario2_NL ~ ASC,   # Reshape by Alternative
+  value.var = c(
+    "Vote", "Cost",
+    "WQ_HUC8", "WQ_HUC4", "WQ_Medium", "WQ_Large", 
+    "WQ_HUC4_NL", "WQ_Medium_NL",
+    "ASC_PercentInstate", "ASC_PercentInstate_NL")  # Columns to spread
+)
+
+## Make only one choice column (1 if they voted for referendum, 0 if they voted for current status)
+data_wide$choice <- data_wide$Vote_1
+data_wide$Vote_0 <- NULL
+data_wide$Vote_1 <- NULL
+
+data_wide$ASC_0 <- 0
+data_wide$ASC_1 <- 1
+
+## Look at the data for respondent 1:
+data_wide[RespondentID == 1]
+## Look at the new columns:
+colnames(data_wide)
+```
+
+## Models
+
+### Mixed logit model
+
+Initialize the apollo model in R and set core controls:
+
+```{r}
+library(apollo)
+database <- data_wide
+
+apollo_initialise()
+
+modelOutput_settings = list(printPVal=T)
+
+### Set core controls
+apollo_control = list(
+  modelName  ="Simulated Data",
+  modelDescr ="Simple MNL model",
+  indivID    ="RespondentID",
+  mixing     = TRUE,
+  nCores     = 4
+)
+
+```
+
+Now, define input parameters and validate the apollo input.
+
+```{r}
+## The cost is fixed in the model, so the parameter for cost is simply b_cost
+## The other variables in the model will be included as random, therefore we
+## here define the mean and standard deviation of their random parameters
+apollo_beta=c(
+  b_cost =0,
+  meanasc_1=1,
+  mean_wqhuc8 =0,
+  mean_wqhuc4 =0,
+  mean_wmed=0,
+  mean_wlar=0,
+  mean_wq4nl =0,
+  mean_wmednl=0,
+  sigmaasc_1=0,
+  sigma_wqhuc8 =0,
+  sigma_wqhuc4 =0,
+  sigma_wmed=0,
+  sigma_wlar=0,
+  sigma_wq4nl =0,
+  sigma_wmednl=0
+)
+
+
+apollo_fixed = c()
+
+## Set up Halton draws for the random variables
+apollo_draws = list(
+  interDrawsType = "halton",
+  interNDraws    = 1000,
+  interUnifDraws = c(),
+  interNormDraws = c("drawsasc_1", "drawsasc_0","draws_wqhuc8",
+                     "draws_wqhuc4",
+                     "draws_wmed",
+                     "draws_wlar", 
+                     "draws_wq4nl","draws_wmednl")
+)
+### Create random parameters
+apollo_randCoeff = function(apollo_beta, apollo_inputs){
+  randcoeff = list()
+  randcoeff[["basc_1"]] = (meanasc_1 + sigmaasc_1*drawsasc_1)
+  randcoeff[["b_wqhuc8"]] = (mean_wqhuc8 + sigma_wqhuc8*draws_wqhuc8)
+  randcoeff[["b_wqhuc4"]] = (mean_wqhuc4 + sigma_wqhuc4*draws_wqhuc4)
+  randcoeff[["b_wmed"]] = (mean_wmed + sigma_wmed*draws_wmed)
+  randcoeff[["b_wlar"]] = (mean_wlar + sigma_wlar*draws_wlar)
+  randcoeff[["b_wq4nl"]] = (mean_wq4nl + sigma_wq4nl*draws_wq4nl)
+  randcoeff[["b_wmednl"]] = (mean_wmednl + sigma_wmednl*draws_wmednl)
+  return(randcoeff)
+}
+
+apollo_inputs = apollo_validateInputs()
+```
+
+Now we define a function for the apollo model:
+
+```{r}
+
+### Function initialisation: do not change the following three commands 
+### Attach inputs and detach after function exit
+apollo_probabilities = function(apollo_beta, apollo_inputs, functionality="estimate"){  
+  apollo_attach(apollo_beta, apollo_inputs)
+  on.exit(apollo_detach(apollo_beta, apollo_inputs)) 
+  ### Create list of probabilities P
+  P = list() 
+  ### List of utilities (later integrated in mnl_settings below)
+  V = list()
+  V[['alt0']] = b_cost*Cost_0 + b_wqhuc8*WQ_HUC8_0 + b_wqhuc4*WQ_HUC4_0 + 
+                b_wmed*WQ_Medium_0 + b_wlar*WQ_Large_0 + b_wq4nl*WQ_HUC4_NL_0 +   
+                b_wmednl*WQ_Medium_NL_0
+  
+  V[['alt1']] = basc_1*1 + 
+                b_cost*Cost_1 + b_wqhuc8*WQ_HUC8_1 + b_wqhuc4*WQ_HUC4_1 +
+                b_wmed*WQ_Medium_1 + b_wlar*WQ_Large_1 + b_wq4nl *WQ_HUC4_NL_1 + 
+                b_wmednl*WQ_Medium_NL_1
+
+  ### Define settings for MNL model component
+  mnl_settings = list(
+      alternatives  = c(alt0 = 0, alt1 = 1),
+      avail         = 1, # all alternatives are available in every choice
+      choiceVar     = choice, 
+      V             = V  # tell function to use list vector defined above
+    )
+
+  ### Compute probabilities using MNL model
+  P[['model']] = apollo_mnl(mnl_settings, functionality)
+  ### Take product across observation for same individual
+  P = apollo_panelProd(P, apollo_inputs, functionality) 
+  ### Average across inter-individual draws - nur bei Mixed Logit!
+  P = apollo_avgInterDraws(P, apollo_inputs, functionality) 
+  ### Prepare and return outputs of function
+  P = apollo_prepareProb(P, apollo_inputs, functionality)
+  return(P)
+  
+}
+
+```
+
+Now we can run the model and estimate the parameters. This might take a while.
+
+```{r}
+model = apollo_estimate(apollo_beta, apollo_fixed,
+                         apollo_probabilities, apollo_inputs,
+                         estimate_settings=list(hessianRoutine="maxLik"))
+apollo_modelOutput(model)
+```
+
+This code can be run to save the model
+
+```{r}
+apollo_saveOutput(model)
+```
+
+The model output is:
+
+```{r}
+# Overview of choices for MNL model component :
+#                                      alt0     alt1
+# Times available                  17653.00 17653.00
+# Times chosen                      8732.00  8921.00
+# Percentage chosen overall           49.46    50.54
+# Percentage chosen when available    49.46    50.54
+
+# Estimated parameters with approximate standard errors from BHHH matrix:
+#                 Estimate     BHHH se BHH t-ratio (0)
+# b_cost         -0.006056  1.1014e-04       -54.97977
+# meanasc_1       0.181315     0.06191         2.92873
+# mean_wqhuc8    -0.739751     0.07237       -10.22151
+# mean_wqhuc4    -0.995286     0.09798       -10.15777
+# mean_wmed      -0.911353     0.09341        -9.75636
+# mean_wlar      -0.900097     0.09487        -9.48758
+# mean_wq4nl     -0.819531     0.06743       -12.15423
+# mean_wmednl    -0.949819     0.07698       -12.33900
+# sigmaasc_1      1.577725     0.04972        31.73158
+# sigma_wqhuc8   -0.986727     0.06298       -15.66787
+# sigma_wqhuc4   -0.658519     0.14959        -4.40211
+# sigma_wmed      0.084223     0.87511         0.09624
+# sigma_wlar     -0.171820     0.56386        -0.30472
+# sigma_wq4nl    -0.680054     0.14235        -4.77737
+# sigma_wmednl   -1.256872     0.12911        -9.73466
+# 
+# Final LL: -9453.9425
+```
+
+This can be compared with the model output from Vossler et al. (from Stata) , shown below:
+
+![](images/clipboard-605873754.png)
+
+The estimated parameters are very similar, but there are some differences in the standard deviation. There are also some warning messages when running the model:
+
+```{r}
+# WARNING: Singular Hessian, cannot calculate s.e. 
+# Could not write hessian to a file.
+# WARNING: Some eigenvalues of the Hessian are positive, indicating convergence to a saddle point! 
+# Computing score matrix...
+```
+
+This could be due to that Apollo computes the log likelihoods with different algorithms than Stata. It would probably be good to revise the model to avoid the warning messages, at least if we were to use the model in a study.
+
+### Model for willingness to pay
+
+Using the estimated parameters from the model we can now calculate the willingness to pay for certain scenarios, as done by the authors.
+
+```{r}
+## Retrieve the parameters
+model <- readRDS("Simulated Data_model.rds")
+coefficients <- as.list(model$estimate)
+```
+
+First we calculate the WTP for a local spatial levels, for different BCG change scenarios. We define a function:
+
+```{r}
+## Function for local spatial scenarios, WTP
+mean_wtp <- function(
+    sc = 0, c_asc, c_HUC8, v_HUC8, c_meanWQ = 0,
+    v_BCG_b = 0, v_BCG_sc1 = 0, v_BCG_sc2 = 0, c_cost){
+  if (sc == 0){
+    wtp <- -((c_asc + 
+              c_HUC8 * (v_HUC8 - 1) +
+              c_meanWQ  * (v_BCG_b - 1)) - 
+             (c_HUC8 * v_HUC8 + c_meanWQ * v_BCG_b)) / c_cost
+    mean_wtp <- mean(wtp)
+  } else if (sc == 1){
+    wtp <- -((c_asc +
+              c_meanWQ * v_BCG_sc1 + c_HUC8 * 2) - 
+             (c_HUC8 * v_HUC8 + c_meanWQ * v_BCG_b)) / c_cost
+    mean_wtp <- mean(wtp)
+  } else if (sc == 2){
+    wtp <- 
+      -((c_asc +
+         c_HUC8  * pmin(v_HUC8, 3) + c_meanWQ * v_BCG_sc2) -
+        (c_HUC8  * v_HUC8 + c_meanWQ * v_BCG_b)) / c_cost
+    mean_wtp <- mean(wtp)
+  }
+}
+
+```
+
+Then we can calculate the WTP for a local watershed (HUC4) for different BCG change scenarios
+
+```{r}
+### Calculate WTP for local sub-watershed (HUC8)
+c_asc <- coefficients$meanasc_1
+c_HUC8 <- coefficients$mean_wqhuc8
+v_HUC8 <- database$HUC8BCG
+c_cost <- coefficients$b_cost
+
+# Increase one BCG level across policy area
+mean_wtp_wq8 <- mean_wtp(
+  sc=0, c_asc, c_HUC8, v_HUC8, c_meanWQ = 0,
+  v_BCG_b = 0, v_BCG_sc1 = 0, v_BCG_sc2 = 0, c_cost)
+
+# Scenario 2: Minimum BCG Level 2 ("swimmable")
+mean_wtp_wq8_bcg2 <- mean_wtp(
+  sc=1, c_asc, c_HUC8, v_HUC8, c_meanWQ = 0,
+  v_BCG_b = 0, v_BCG_sc1 = 0, v_BCG_sc2 = 0, c_cost)
+
+# Scenario 3: Cap BCG Level at 3
+mean_wtp_wq8_bcg3 <- mean_wtp(
+  sc=2, c_asc, c_HUC8, v_HUC8, c_meanWQ = 0,
+  v_BCG_b = 0, v_BCG_sc1 = 0, v_BCG_sc2 = 0, c_cost)
+```
+
+Then we can calculate the WTP for a local watershed (HUC4) for different BCG change scenarios
+
+```{r}
+### Calculate WTP for local watershed (HUC4)
+c_meanWQ <- coefficients$mean_wqhuc4
+v_BCG_b <- database$HUC4BCG_base
+v_BCG_sc1 <- database$HUC4BCG_scenario1
+v_BCG_sc2 <- database$HUC4BCG_scenario2
+
+# Increase one BCG level across policy area
+mean_wtp_wq4 <- mean_wtp(
+  sc=0, c_asc, c_HUC8, v_HUC8, c_meanWQ,
+  v_BCG_b, v_BCG_sc1, v_BCG_sc2, c_cost)
+
+## Minimum BCG Level 2 ("swimmable")
+mean_wtp_wq4_bcg2 <- mean_wtp(
+  sc=1, c_asc, c_HUC8, v_HUC8, c_meanWQ,
+  v_BCG_b, v_BCG_sc1, v_BCG_sc2, c_cost)
+
+# Scenario 3: Cap BCG Level at 3
+mean_wtp_wq4_bcg3 <- mean_wtp(
+  sc=2, c_asc, c_HUC8, v_HUC8, c_meanWQ,
+  v_BCG_b, v_BCG_sc1, v_BCG_sc2, c_cost)
+```
+
+```{r}
+## Calculate WTP for local 3 Watersheds (3 HUC4s)
+c_meanWQ <- coefficients$mean_wmed
+v_BCG_b <- database$MediumBCG_base
+v_BCG_sc1 <- database$MediumBCG_scenario1
+v_BCG_sc2 <- database$MediumBCG_scenario2
+
+
+# Increase one BCG level across policy area
+mean_wtp_wqmed <- mean_wtp(
+  sc=0, c_asc, c_HUC8, v_HUC8, c_meanWQ,
+  v_BCG_b, v_BCG_sc1, v_BCG_sc2, c_cost)
+
+## Minimum BCG Level 2 ("swimmable")
+mean_wtp_wqmed_bcg2 <- mean_wtp(
+  sc=1, c_asc, c_HUC8, v_HUC8, c_meanWQ,
+  v_BCG_b, v_BCG_sc1, v_BCG_sc2, c_cost)
+
+# Scenario 3: Cap BCG Level at 3
+mean_wtp_wqmed_bcg3 <- mean_wtp(
+  sc=2, c_asc, c_HUC8, v_HUC8, c_meanWQ,
+  v_BCG_b, v_BCG_sc1, v_BCG_sc2, c_cost)
+```
+
+Now, we calculate WTP for the full study area (local), for different BCG change scenarios (not with a function).
+
+```{r}
+## Full study area
+# Calculate WTP for increasing one BCG level across the policy area
+wtp_wqlar <- -((
+  coefficients$meanasc_1 +
+  coefficients$mean_wlar * 2.52 +
+  coefficients$mean_wqhuc8 * (database$HUC8BCG - 1)) -
+  (coefficients$mean_wlar * 3.52 +
+   coefficients$mean_wqhuc8 * database$HUC8BCG)) / coefficients$b_cost
+mean_wtp_wqlar<-mean(wtp_wqlar)
+
+# Calculate WTP for setting Minimum BCG Level to 2 ("swimmable")
+wtp_wqlar_bcg2 <- -((
+  coefficients$meanasc_1 +
+  coefficients$mean_wlar * 2 +
+  coefficients$mean_wqhuc8 * 2) -
+  (coefficients$mean_wlar * 3.52 +
+   coefficients$mean_wqhuc8 * database$HUC8BCG)) / coefficients$b_cost
+mean_wtp_wqlar_bcg2 <- mean(wtp_wqlar_bcg2)
+
+# Calculate WTP for setting Minimum BCG Level to 3 ("biological")
+wtp_wqlar_bcg3 <- -((
+  coefficients$meanasc_1 +
+  coefficients$mean_wlar * (3.52 - 0.59) +
+  coefficients$mean_wqhuc8 * pmin(database$HUC8BCG, 3)) -
+  (coefficients$mean_wlar * 3.52 + 
+   coefficients$mean_wqhuc8 * database$HUC8BCG)) / coefficients$b_cost
+mean_wtp_wqlar_bcg3 <- mean(wtp_wqlar_bcg3)
+```
+
+Now calculate non-local scenarios. First for one watershed:
+
+```{r}
+# Calculate WTP for increasing one BCG level across policy area for non-local watershed (HUC4)
+wtp_wq4nl <- -((
+  coefficients$meanasc_1 +
+  coefficients$mean_wq4nl * (database$HUC4BCG_base_NL - 1)) -
+  (coefficients$mean_wq4nl * database$HUC4BCG_base_NL)) / coefficients$b_cost
+mean_wtp_wq4nl <- mean(wtp_wq4nl)
+
+# Calculate WTP for Minimum BCG Level 2 ("swimmable") for non-local watershed (HUC4)
+wtp_wq4nl_bcg2 <- -((
+  coefficients$meanasc_1 +
+    coefficients$mean_wq4nl * 2) -
+    (coefficients$mean_wq4nl * database$HUC4BCG_base_NL)) / coefficients$b_cost
+mean_wtp_wq4nl_bcg2 <- mean(wtp_wq4nl_bcg2)
+
+# Calculate WTP for Minimum BCG Level 3 ("biological") for non-local watershed(HUC4)
+wtp_wq4nl_bcg3 <- -((
+  coefficients$meanasc_1 +
+    coefficients$mean_wq4nl * database$HUC4BCG_scenario2_NL) -
+    (coefficients$mean_wq4nl * database$HUC4BCG_base_NL)) / coefficients$b_cost
+mean_wtp_wq4nl_bcg3<-mean(wtp_wq4nl_bcg3)
+```
+
+Now, non-local for three watersheds:
+
+```{r}
+
+## Scenario 6: Nonlocal for 3 Watershed
+#Calculate WTP for increasing one BCG level across policy area for non-local 3 watersheds (3 HUC4s)
+wtp_wqmednl <- -((
+  coefficients$meanasc_1 +
+  coefficients$mean_wmednl * (database$MediumBCG_base_NL - 1)) -
+  (coefficients$mean_wmednl * database$MediumBCG_base_NL)) / coefficients$b_cost
+mean_wtp_wqmednl <- mean(wtp_wqmednl)
+
+# Calculate WTP for Minimum BCG Level 2 ("swimmable") for non-local 3 watersheds (3 HUC4s)
+wtp_wqmednl_bcg2 <- -((
+  coefficients$meanasc_1 +
+  coefficients$mean_wmednl * 2) -
+  (coefficients$mean_wmednl * database$MediumBCG_base_NL)) / coefficients$b_cost
+mean_wtp_wqmednl_bcg2 <- mean(wtp_wqmednl_bcg2)
+
+
+# Calculate WTP for Minimum BCG Level 3 ("biological") for non-local 3 watersheds (3 HUC4s)
+wtp_wqmednl_bcg3 <- -((
+  coefficients$meanasc_1 +
+  coefficients$mean_wmednl * database$MediumBCG_scenario2_NL) -
+  (coefficients$mean_wmednl * database$MediumBCG_base_NL)) / coefficients$b_cost
+mean_wtp_wqmednl_bcg3 <- mean(wtp_wqmednl_bcg3)
+```
+
+Now we can summarize all WPT values in a data frame:
+
+```{r}
+
+# Summarizing the result in a matrix (Table 2)
+mean_wtp_matrix <- matrix(c(
+  mean_wtp_wq8, mean_wtp_wq4,
+  mean_wtp_wqmed, mean_wtp_wqlar,
+  mean_wtp_wq4nl, mean_wtp_wqmednl, 
+  mean_wtp_wq8_bcg2, mean_wtp_wq4_bcg2, 
+  mean_wtp_wqmed_bcg2, mean_wtp_wqlar_bcg2, 
+  mean_wtp_wq4nl_bcg2, mean_wtp_wqmednl_bcg2,
+  mean_wtp_wq8_bcg3, mean_wtp_wq4_bcg3,
+  mean_wtp_wqmed_bcg3, mean_wtp_wqlar_bcg3, 
+  mean_wtp_wq4nl_bcg3, mean_wtp_wqmednl_bcg3),
+  nrow = 3, byrow = TRUE
+)
+mean_wtp_matrix <- round(mean_wtp_matrix, 0)
+
+# Assign column and row names
+colnames(mean_wtp_matrix) <- c(
+  "Subwatershed", "Watershed", 
+  "3 Watersheds", "Study region", 
+  "Non-Local Watershed", "Non-Local 3 Watersheds")
+rownames(mean_wtp_matrix) <- c(
+  "One-level BCG Improvement",
+  "Minimum BCG Level 2",
+  "Minimum BCG Level 3")
+
+# Print the matrix
+print(mean_wtp_matrix[,1:4])
+print(mean_wtp_matrix[,5:6])
+
+```
+
+We can now compare these values with the values from Vossler et al. (2023). The values are almost identical, and the small differences are probably due to the differences in the estimated model.
+
+![](images/clipboard-1057870990.png)

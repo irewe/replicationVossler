@@ -1,0 +1,259 @@
+Model run by ivana.ewerlof using Apollo 0.3.4 on R 4.4.0 for Windows.
+Please acknowledge the use of Apollo by citing Hess & Palma (2019)
+  DOI 10.1016/j.jocm.2019.100170
+  www.ApolloChoiceModelling.com
+
+Model name                                  : Simulated Data
+Model description                           : Simple MNL model
+Model run at                                : 2024-11-22 15:44:25.08282
+Estimation method                           : bgw
+Model diagnosis                             : Relative function convergence
+Optimisation diagnosis                      : Saddle point found
+     hessian properties                     : Some eigenvalues are positive and others negative
+     maximum eigenvalue                     : 0
+     reciprocal of condition number         : not calculated (Hessian is not negative definite)
+Number of individuals                       : 2000
+Number of rows in database                  : 17653
+Number of modelled outcomes                 : 17653
+
+Number of cores used                        :  4 
+Number of inter-individual draws            : 1000 (halton)
+
+LL(start)                                   : -14262.01
+LL at equal shares, LL(0)                   : -12236.13
+LL at observed shares, LL(C)                : -12235.12
+LL(final)                                   : -9453.94
+Rho-squared vs equal shares                  :  0.2274 
+Adj.Rho-squared vs equal shares              :  0.2261 
+Rho-squared vs observed shares               :  0.2273 
+Adj.Rho-squared vs observed shares           :  0.2262 
+AIC                                         :  18937.88 
+BIC                                         :  19054.56 
+
+Estimated parameters                        : 15
+Time taken (hh:mm:ss)                       :  00:38:0.93 
+     pre-estimation                         :  00:02:8.68 
+     estimation                             :  00:03:42.74 
+     post-estimation                        :  00:32:9.5 
+Iterations                                  :  18  
+
+Unconstrained optimisation.
+
+Estimates:
+
+
+Overview of choices for MNL model component :
+                                     alt0     alt1
+Times available                  17653.00 17653.00
+Times chosen                      8732.00  8921.00
+Percentage chosen overall           49.46    50.54
+Percentage chosen when available    49.46    50.54
+
+
+
+Classical covariance matrix:
+                   b_cost    meanasc_1  mean_wqhuc8  mean_wqhuc4    mean_wmed    mean_wlar   mean_wq4nl
+b_cost                 NA           NA           NA           NA           NA           NA           NA
+meanasc_1              NA           NA           NA           NA           NA           NA           NA
+mean_wqhuc8            NA           NA           NA           NA           NA           NA           NA
+mean_wqhuc4            NA           NA           NA           NA           NA           NA           NA
+mean_wmed              NA           NA           NA           NA           NA           NA           NA
+mean_wlar              NA           NA           NA           NA           NA           NA           NA
+mean_wq4nl             NA           NA           NA           NA           NA           NA           NA
+mean_wmednl            NA           NA           NA           NA           NA           NA           NA
+sigmaasc_1             NA           NA           NA           NA           NA           NA           NA
+sigma_wqhuc8           NA           NA           NA           NA           NA           NA           NA
+sigma_wqhuc4           NA           NA           NA           NA           NA           NA           NA
+sigma_wmed             NA           NA           NA           NA           NA           NA           NA
+sigma_wlar             NA           NA           NA           NA           NA           NA           NA
+sigma_wq4nl            NA           NA           NA           NA           NA           NA           NA
+sigma_wmednl           NA           NA           NA           NA           NA           NA           NA
+              mean_wmednl   sigmaasc_1 sigma_wqhuc8 sigma_wqhuc4   sigma_wmed   sigma_wlar  sigma_wq4nl
+b_cost                 NA           NA           NA           NA           NA           NA           NA
+meanasc_1              NA           NA           NA           NA           NA           NA           NA
+mean_wqhuc8            NA           NA           NA           NA           NA           NA           NA
+mean_wqhuc4            NA           NA           NA           NA           NA           NA           NA
+mean_wmed              NA           NA           NA           NA           NA           NA           NA
+mean_wlar              NA           NA           NA           NA           NA           NA           NA
+mean_wq4nl             NA           NA           NA           NA           NA           NA           NA
+mean_wmednl            NA           NA           NA           NA           NA           NA           NA
+sigmaasc_1             NA           NA           NA           NA           NA           NA           NA
+sigma_wqhuc8           NA           NA           NA           NA           NA           NA           NA
+sigma_wqhuc4           NA           NA           NA           NA           NA           NA           NA
+sigma_wmed             NA           NA           NA           NA           NA           NA           NA
+sigma_wlar             NA           NA           NA           NA           NA           NA           NA
+sigma_wq4nl            NA           NA           NA           NA           NA           NA           NA
+sigma_wmednl           NA           NA           NA           NA           NA           NA           NA
+             sigma_wmednl
+b_cost                 NA
+meanasc_1              NA
+mean_wqhuc8            NA
+mean_wqhuc4            NA
+mean_wmed              NA
+mean_wlar              NA
+mean_wq4nl             NA
+mean_wmednl            NA
+sigmaasc_1             NA
+sigma_wqhuc8           NA
+sigma_wqhuc4           NA
+sigma_wmed             NA
+sigma_wlar             NA
+sigma_wq4nl            NA
+sigma_wmednl           NA
+
+Robust covariance matrix:
+
+Classical correlation matrix:
+                   b_cost    meanasc_1  mean_wqhuc8  mean_wqhuc4    mean_wmed    mean_wlar   mean_wq4nl
+b_cost                 NA           NA           NA           NA           NA           NA           NA
+meanasc_1              NA           NA           NA           NA           NA           NA           NA
+mean_wqhuc8            NA           NA           NA           NA           NA           NA           NA
+mean_wqhuc4            NA           NA           NA           NA           NA           NA           NA
+mean_wmed              NA           NA           NA           NA           NA           NA           NA
+mean_wlar              NA           NA           NA           NA           NA           NA           NA
+mean_wq4nl             NA           NA           NA           NA           NA           NA           NA
+mean_wmednl            NA           NA           NA           NA           NA           NA           NA
+sigmaasc_1             NA           NA           NA           NA           NA           NA           NA
+sigma_wqhuc8           NA           NA           NA           NA           NA           NA           NA
+sigma_wqhuc4           NA           NA           NA           NA           NA           NA           NA
+sigma_wmed             NA           NA           NA           NA           NA           NA           NA
+sigma_wlar             NA           NA           NA           NA           NA           NA           NA
+sigma_wq4nl            NA           NA           NA           NA           NA           NA           NA
+sigma_wmednl           NA           NA           NA           NA           NA           NA           NA
+              mean_wmednl   sigmaasc_1 sigma_wqhuc8 sigma_wqhuc4   sigma_wmed   sigma_wlar  sigma_wq4nl
+b_cost                 NA           NA           NA           NA           NA           NA           NA
+meanasc_1              NA           NA           NA           NA           NA           NA           NA
+mean_wqhuc8            NA           NA           NA           NA           NA           NA           NA
+mean_wqhuc4            NA           NA           NA           NA           NA           NA           NA
+mean_wmed              NA           NA           NA           NA           NA           NA           NA
+mean_wlar              NA           NA           NA           NA           NA           NA           NA
+mean_wq4nl             NA           NA           NA           NA           NA           NA           NA
+mean_wmednl            NA           NA           NA           NA           NA           NA           NA
+sigmaasc_1             NA           NA           NA           NA           NA           NA           NA
+sigma_wqhuc8           NA           NA           NA           NA           NA           NA           NA
+sigma_wqhuc4           NA           NA           NA           NA           NA           NA           NA
+sigma_wmed             NA           NA           NA           NA           NA           NA           NA
+sigma_wlar             NA           NA           NA           NA           NA           NA           NA
+sigma_wq4nl            NA           NA           NA           NA           NA           NA           NA
+sigma_wmednl           NA           NA           NA           NA           NA           NA           NA
+             sigma_wmednl
+b_cost                 NA
+meanasc_1              NA
+mean_wqhuc8            NA
+mean_wqhuc4            NA
+mean_wmed              NA
+mean_wlar              NA
+mean_wq4nl             NA
+mean_wmednl            NA
+sigmaasc_1             NA
+sigma_wqhuc8           NA
+sigma_wqhuc4           NA
+sigma_wmed             NA
+sigma_wlar             NA
+sigma_wq4nl            NA
+sigma_wmednl           NA
+
+Robust correlation matrix:
+
+ 20 most extreme outliers in terms of lowest average per choice prediction:
+
+Changes in parameter estimates from starting values:
+
+Settings and functions used in model definition:
+
+apollo_control
+--------------
+                       Value                                                                             
+modelName              "Simulated Data"                                                                  
+modelDescr             "Simple MNL model"                                                                
+indivID                "RespondentID"                                                                    
+mixing                 "TRUE"                                                                            
+nCores                 "4"                                                                               
+debug                  "FALSE"                                                                           
+workInLogs             "FALSE"                                                                           
+seed                   "13"                                                                              
+HB                     "FALSE"                                                                           
+noValidation           "FALSE"                                                                           
+noDiagnostics          "FALSE"                                                                           
+calculateLLC           "TRUE"                                                                            
+analyticHessian        "FALSE"                                                                           
+memorySaver            "FALSE"                                                                           
+outputDirectory        "C:/Users/ivana.ewerlof/project_repos/course_DCE/replicationVossler/final report/"
+panelData              "TRUE"                                                                            
+analyticGrad           "TRUE"                                                                            
+analyticGrad_manualSet "FALSE"                                                                           
+overridePanel          "FALSE"                                                                           
+preventOverridePanel   "FALSE"                                                                           
+noModification         "FALSE"                                                                           
+
+Hessian routines attempted
+--------------------------
+numerical second derivative of LL (using maxLik)
+
+Scaling used in computing Hessian
+---------------------------------
+                   Value
+b_cost       0.006055658
+meanasc_1    0.181315257
+mean_wqhuc8  0.739750845
+mean_wqhuc4  0.995285638
+mean_wmed    0.911352516
+mean_wlar    0.900097272
+mean_wq4nl   0.819530662
+mean_wmednl  0.949818620
+sigmaasc_1   1.577724531
+sigma_wqhuc8 0.986726815
+sigma_wqhuc4 0.658518771
+sigma_wmed   0.084223434
+sigma_wlar   0.171820049
+sigma_wq4nl  0.680054468
+sigma_wmednl 1.256871811
+
+
+apollo_randCoeff
+------------------
+function(apollo_beta, apollo_inputs){
+  randcoeff = list()
+  randcoeff[["basc_1"]] = (meanasc_1 + sigmaasc_1*drawsasc_1)
+  randcoeff[["b_wqhuc8"]] = (mean_wqhuc8 + sigma_wqhuc8*draws_wqhuc8)
+  randcoeff[["b_wqhuc4"]] = (mean_wqhuc4 + sigma_wqhuc4*draws_wqhuc4)
+  randcoeff[["b_wmed"]] = (mean_wmed + sigma_wmed*draws_wmed)
+  randcoeff[["b_wlar"]] = (mean_wlar + sigma_wlar*draws_wlar)
+  randcoeff[["b_wq4nl"]] = (mean_wq4nl + sigma_wq4nl*draws_wq4nl)
+  randcoeff[["b_wmednl"]] = (mean_wmednl + sigma_wmednl*draws_wmednl)
+  return(randcoeff)
+}
+<bytecode: 0x0000022cf52dd1f0>
+
+
+apollo_probabilities
+----------------------
+function(apollo_beta, apollo_inputs, functionality="estimate"){  
+  apollo_attach(apollo_beta, apollo_inputs)
+  on.exit(apollo_detach(apollo_beta, apollo_inputs)) ### Create list of probabilities P
+  P = list() ### List of utilities (later integrated in mnl_settings below), they must be added in the beta and 
+  V = list()
+  V[['alt0']] = b_cost*Cost_0 + b_wqhuc8*WQ_HUC8_0 + b_wqhuc4*WQ_HUC4_0 + 
+                b_wmed*WQ_Medium_0 + b_wlar*WQ_Large_0 + b_wq4nl*WQ_HUC4_NL_0 +   
+                b_wmednl*WQ_Medium_NL_0
+  V[['alt1']] = basc_1*1+b_cost*Cost_1 + b_wqhuc8*WQ_HUC8_1+b_wqhuc4*WQ_HUC4_1+b_wmed*WQ_Medium_1+b_wlar*WQ_Large_1+b_wq4nl *WQ_HUC4_NL_1+ b_wmednl*WQ_Medium_NL_1
+
+  ### Define settings for MNL model component
+  mnl_settings = list(
+      alternatives  = c(alt0 = 0, alt1 = 1) ,
+      avail      = 1, # all alternatives are available in every choice
+      choiceVar     = choice, 
+      V             = V  # tell function to use list vector defined above
+    )
+
+  ### Compute probabilities using MNL model
+  P[['model']] = apollo_mnl(mnl_settings, functionality)
+  ### Take product across observation for same individual
+  P = apollo_panelProd(P, apollo_inputs, functionality) 
+  ### Average across inter-individual draws - nur bei Mixed Logit!
+  P = apollo_avgInterDraws(P, apollo_inputs, functionality) 
+  ### Prepare and return outputs of function
+  P = apollo_prepareProb(P, apollo_inputs, functionality)
+  return(P)
+  
+}
