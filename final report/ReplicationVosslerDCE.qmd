@@ -122,6 +122,7 @@ apollo_draws = list(
                      "draws_wlar", 
                      "draws_wq4nl","draws_wmednl")
 )
+
 ### Create random parameters
 apollo_randCoeff = function(apollo_beta, apollo_inputs){
   randcoeff = list()
@@ -188,9 +189,11 @@ Now we can run the model and estimate the parameters.
 model = apollo_estimate(apollo_beta, apollo_fixed,
                          apollo_probabilities, apollo_inputs,
                          estimate_settings=list(hessianRoutine="maxLik"))
+```
 We view the output:
-apollo_modelOutput(model)
 ```{r}
+apollo_modelOutput(model)
+```
 # Overview of choices for MNL model component :
 # The model output is:
 # Model name                                  : Simulated Data
@@ -236,7 +239,7 @@ apollo_modelOutput(model)
 # Full study regional area (local)                0.111132         NaN         NaN     0.73140        0.1519
 # One watedshed area (Non local)                  0.648348     0.16436       3.945     0.19057        3.4022
 # Three contiguous watershed area  (Non local)    1.239355     0.13760       9.007     0.15330        8.0845
-```{r}
+```
 
 To save the model output we run the following:
 
