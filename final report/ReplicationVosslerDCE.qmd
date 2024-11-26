@@ -114,9 +114,9 @@ apollo_fixed = c()
 ## Set up Halton draws for the random variables
 apollo_draws = list(
   interDrawsType = "halton",
-  interNDraws    = 1000,
+  interNDraws    = 500,
   interUnifDraws = c(),
-  interNormDraws = c("drawsasc_1", "drawsasc_0","draws_wqhuc8",
+  interNormDraws = c("drawsasc_1","draws_wqhuc8",
                      "draws_wqhuc4",
                      "draws_wmed",
                      "draws_wlar", 
@@ -182,66 +182,77 @@ apollo_probabilities = function(apollo_beta, apollo_inputs, functionality="estim
 
 ```
 
-Now we can run the model and estimate the parameters. This might take a while.
+Now we can run the model and estimate the parameters.
 
 ```{r}
 model = apollo_estimate(apollo_beta, apollo_fixed,
                          apollo_probabilities, apollo_inputs,
                          estimate_settings=list(hessianRoutine="maxLik"))
+We view the output:
 apollo_modelOutput(model)
-```
+```{r}
+# Overview of choices for MNL model component :
+# The model output is:
+# Model name                                  : Simulated Data
+# Model description                           : Simple MNL model
+# Model run at                                : 2024-11-26 15:26:32.692067
+# Estimation method                           : bgw
+# Model diagnosis                             : Relative function convergence
+# Optimisation diagnosis                      : Saddle point found
+#     hessian properties                     : Some eigenvalues are positive and others negative
+#     maximum eigenvalue                     : 20.166473
+#     reciprocal of condition number         : not calculated (Hessian is not negative definite)
+# Number of individuals                       : 2000
+# Number of rows in database                  : 17653
+# Number of modelled outcomes                 : 17653
 
-This code can be run to save the model
+# Number of cores used                        :  4 
+# Number of inter-individual draws            : 500 (halton)
+
+# LL(start)                                   : -14262.01
+# LL(final)                                   : -9455.61
+# AIC                                         :  18941.21 
+# BIC                                         :  19057.89 
+
+# Iterations                                  :  17  
+
+# Estimates:
+#                                        Estimate        s.e.   t.rat.(0)    Rob.s.e. Rob.t.rat.(0)
+# Mean eastimate for the inducment effect on the vote for policy
+# Cost                                           -0.006039  1.3343e-04     -45.257  2.4137e-04      -25.0191
+# Alternative specific variable                   0.178721     0.06452       2.770     0.07491        2.3857
+# BCG change in subwatedshed area                -0.739513     0.06773     -10.919     0.07091      -10.4291
+# BCG change in watedshed area                   -0.983202     0.09693     -10.143     0.10167       -9.6709
+# Three contiguous watershed area (local )       -0.909063     0.07784     -11.678     0.15141       -6.0039
+# Full study regional area (local)               -0.891196     0.09581      -9.301     0.11032       -8.0783
+# One watedshed area (Non local)                 -0.815634     0.06538     -12.476     0.07816      -10.4358
+# Three contiguous watershed area  (Non local)   -0.945351     0.07672     -12.322     0.09033      -10.4652
+
+# Estimates for the individual heterogeniety
+# Alternative specific variable                  -1.574501     0.04629     -34.013     0.05420      -29.0516
+# BCG change in subwatedshed area                -0.975346     0.06322     -15.427     0.07091      -13.7552
+# BCG change in watedshed area                    0.617418     0.08672       7.119     0.11466        5.3847
+# Three contiguous watershed area (local)        -0.206820         NaN         NaN     1.46683       -0.1410
+# Full study regional area (local)                0.111132         NaN         NaN     0.73140        0.1519
+# One watedshed area (Non local)                  0.648348     0.16436       3.945     0.19057        3.4022
+# Three contiguous watershed area  (Non local)    1.239355     0.13760       9.007     0.15330        8.0845
+```{r}
+
+To save the model output we run the following:
 
 ```{r}
 apollo_saveOutput(model)
 ```
-
-The model output is:
-
-```{r}
-# Overview of choices for MNL model component :
-#                                      alt0     alt1
-# Times available                  17653.00 17653.00
-# Times chosen                      8732.00  8921.00
-# Percentage chosen overall           49.46    50.54
-# Percentage chosen when available    49.46    50.54
-
-# Estimated parameters with approximate standard errors from BHHH matrix:
-#                 Estimate     BHHH se BHH t-ratio (0)
-# b_cost         -0.006056  1.1014e-04       -54.97977
-# meanasc_1       0.181315     0.06191         2.92873
-# mean_wqhuc8    -0.739751     0.07237       -10.22151
-# mean_wqhuc4    -0.995286     0.09798       -10.15777
-# mean_wmed      -0.911353     0.09341        -9.75636
-# mean_wlar      -0.900097     0.09487        -9.48758
-# mean_wq4nl     -0.819531     0.06743       -12.15423
-# mean_wmednl    -0.949819     0.07698       -12.33900
-# sigmaasc_1      1.577725     0.04972        31.73158
-# sigma_wqhuc8   -0.986727     0.06298       -15.66787
-# sigma_wqhuc4   -0.658519     0.14959        -4.40211
-# sigma_wmed      0.084223     0.87511         0.09624
-# sigma_wlar     -0.171820     0.56386        -0.30472
-# sigma_wq4nl    -0.680054     0.14235        -4.77737
-# sigma_wmednl   -1.256872     0.12911        -9.73466
-# 
-# Final LL: -9453.9425
-```
-
 This can be compared with the model output from Vossler et al. (from Stata) , shown below:
 
 ![](images/clipboard-605873754.png)
 
-The estimated parameters are very similar, but there are some differences in the standard deviation. There are also some warning messages when running the model:
+The estimated parameters are the same as for the one in vossler, except from one standard deviation.
 
+There are also some warning messages where we find a saddle point instead of a optimum, and as we said during class, the reason for this is for us unknown and could be a transformation from using algoritms from stata to R.
 ```{r}
-# WARNING: Singular Hessian, cannot calculate s.e. 
-# Could not write hessian to a file.
 # WARNING: Some eigenvalues of the Hessian are positive, indicating convergence to a saddle point! 
-# Computing score matrix...
 ```
-
-This could be due to that Apollo computes the log likelihoods with different algorithms than Stata. It would probably be good to revise the model to avoid the warning messages, at least if we were to use the model in a study.
 
 ### Model for willingness to pay
 
@@ -472,10 +483,18 @@ rownames(mean_wtp_matrix) <- c(
 
 # Print the matrix
 print(mean_wtp_matrix[,1:4])
-print(mean_wtp_matrix[,5:6])
 
+#                          Subwatershed Watershed 3 Watersheds Study region
+# One-level BCG Improvement          152       315          303          300
+# Minimum BCG Level 2                238       491          471          462
+# Minimum BCG Level 3                120       217          209          207
+
+print(mean_wtp_matrix[,5:6])
+#                          Non-Local Watershed Non-Local 3 Watersheds
+# One-level BCG Improvement                 165                    186
+# Minimum BCG Level 2                       224                    261
+# Minimum BCG Level 3                        95                    112
 ```
 
-We can now compare these values with the values from Vossler et al. (2023). The values are almost identical, and the small differences are probably due to the differences in the estimated model.
-
+We can now compare these values with the values from Vossler et al. (2023). The values are the same. However one question that arises are that wtp estimated values does not take into account for the individual heterogeniety, so that could be discussed going forward  if that is appropriate instead of computing the estimates from the the conditional mean from the total avarage.
 ![](images/clipboard-1057870990.png)
