@@ -19,6 +19,7 @@ library(data.table)
 data <- fread("../data/dataVossler.tab")
 colnames(data)
 head(data[RespondentID %in% c(1), c("RespondentID", "ChoiceID", "Referendum", "Vote", "ASC")], 40)[order(ChoiceID)]
+
 ```
 
 As seen above, the data have a lot of variables and for each respondent there are two rows for each possible Referendum, one for the "current state scenario" (ASC = 0) and one for the proposed referendum (ASC = 1). If the respondent did get a certain Referendum as an option, then the column "Vote" will not be NA. So first we remove rows where Vote is NA. Then we make the data wide so that for each ChoiceID (which is unique per choice set and respondent) we have two sets of the attribute columns: first for the current state scenario (ASC = 0) and then for the proposed referendum in that choice set (ASC = 1). We only keep the variables that we use in the models that we replicated.
@@ -186,13 +187,17 @@ apollo_probabilities = function(apollo_beta, apollo_inputs, functionality="estim
 Now we can run the model and estimate the parameters.
 
 ```{r}
+
 model = apollo_estimate(apollo_beta, apollo_fixed,
                          apollo_probabilities, apollo_inputs,
                          estimate_settings=list(hessianRoutine="maxLik"))
 ```
+
 We view the output:
+
 ```{r}
 apollo_modelOutput(model)
+
 ```
 # Overview of choices for MNL model component :
 # The model output is:
@@ -239,13 +244,17 @@ apollo_modelOutput(model)
 # Full study regional area (local)                0.111132         NaN         NaN     0.73140        0.1519
 # One watedshed area (Non local)                  0.648348     0.16436       3.945     0.19057        3.4022
 # Three contiguous watershed area  (Non local)    1.239355     0.13760       9.007     0.15330        8.0845
+
 ```
 
 To save the model output we run the following:
 
 ```{r}
+
 apollo_saveOutput(model)
+
 ```
+
 This can be compared with the model output from Vossler et al. (from Stata) , shown below:
 
 ![](images/clipboard-605873754.png)
@@ -253,7 +262,9 @@ This can be compared with the model output from Vossler et al. (from Stata) , sh
 The estimated parameters are the same as for the one in vossler, except from one standard deviation.
 
 There are also some warning messages where we find a saddle point instead of a optimum, and as we said during class, the reason for this is for us unknown and could be a transformation from using algoritms from stata to R.
+
 ```{r}
+
 # WARNING: Some eigenvalues of the Hessian are positive, indicating convergence to a saddle point! 
 ```
 
