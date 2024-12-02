@@ -4,6 +4,7 @@ format: html
 editor: visual
 ---
 
+
 # Introduction
 
 This is a replication of models from Vossler et al. 2023, "Valuing improvements in the ecological integrity of local andregional waters using the biological condition gradient".
@@ -14,19 +15,23 @@ This is a replication of models from Vossler et al. 2023, "Valuing improvements 
 
 We first read the data that they used in their model.
 
+
 ```{r}
 library(data.table)
 data <- fread("../data/dataVossler.tab")
 colnames(data)
 head(data[RespondentID %in% c(1), c("RespondentID", "ChoiceID", "Referendum", "Vote", "ASC")], 40)[order(ChoiceID)]
-
 ```
 
+
 As seen above, the data have a lot of variables and for each respondent there are two rows for each possible Referendum, one for the "current state scenario" (ASC = 0) and one for the proposed referendum (ASC = 1). If the respondent did get a certain Referendum as an option, then the column "Vote" will not be NA. So first we remove rows where Vote is NA. Then we make the data wide so that for each ChoiceID (which is unique per choice set and respondent) we have two sets of the attribute columns: first for the current state scenario (ASC = 0) and then for the proposed referendum in that choice set (ASC = 1). We only keep the variables that we use in the models that we replicated.
+
 
 ```{r}
 
 data <- data[!is.na(Vote)]
+data <- data[order(ChoiceID, ASC)]
+
 data <- data[order(ChoiceID, ASC)]
 
 ## Make wide format
@@ -58,11 +63,13 @@ data_wide[RespondentID == 1]
 colnames(data_wide)
 ```
 
+
 ## Models
 
 ### Mixed logit model
 
 Initialize the apollo model in R and set core controls:
+
 
 ```{r}
 library(apollo)
@@ -83,7 +90,9 @@ apollo_control = list(
 
 ```
 
+
 Now, define input parameters and validate the apollo input.
+
 
 ```{r}
 ## The cost is fixed in the model, so the parameter for cost is simply b_cost
@@ -113,15 +122,14 @@ apollo_fixed = c()
 ## Set up Halton draws for the random variables
 apollo_draws = list(
   interDrawsType = "halton",
-  interNDraws    = 500,
+  interNDraws    = 1000,
   interUnifDraws = c(),
-  interNormDraws = c("drawsasc_1","draws_wqhuc8",
+  interNormDraws = c("drawsasc_1", "drawsasc_0","draws_wqhuc8",
                      "draws_wqhuc4",
                      "draws_wmed",
                      "draws_wlar", 
                      "draws_wq4nl","draws_wmednl")
 )
-
 ### Create random parameters
 apollo_randCoeff = function(apollo_beta, apollo_inputs){
   randcoeff = list()
@@ -138,7 +146,9 @@ apollo_randCoeff = function(apollo_beta, apollo_inputs){
 apollo_inputs = apollo_validateInputs()
 ```
 
+
 Now we define a function for the apollo model:
+
 
 ```{r}
 
@@ -182,51 +192,80 @@ apollo_probabilities = function(apollo_beta, apollo_inputs, functionality="estim
 
 ```
 
-Now we can run the model and estimate the parameters.
+
+Now we can run the model and estimate the parameters. This might take a while.
+
 
 ```{r}
 model = apollo_estimate(apollo_beta, apollo_fixed,
                          apollo_probabilities, apollo_inputs,
                          estimate_settings=list(hessianRoutine="maxLik"))
-```
-
-We view the output:
-
-```{r}
 apollo_modelOutput(model)
 ```
 
-```{r}
-# Overview of estimates:
-#             Estimate      s.e.            t.rat.(0)  Rob.s.e.     Rob.t.rat.(0)
-# b_cost      -0.006039     1.3343e-04     -45.257     2.4137e-04     -25.0191
-# meanasc_1    0.178721	    0.06452	         2.770	   0.07491	        2.3857
-# mean_wqhuc8	-0.739513	    0.06773	       -10.919	   0.07091	      -10.4291
-# mean_wqhuc4	-0.983202	    0.09693	       -10.143	   0.10167	       -9.6709
-# mean_wmed	  -0.909063	    0.07784	       -11.678	   0.15141	       -6.0039
-# mean_wlar	  -0.891196	    0.09581	        -9.301	   0.11032	       -8.0783
-# mean_wq4nl	-0.815634	    0.06538	       -12.476	   0.07816	      -10.4358
-# mean_wmednl	-0.945351	    0.07672	       -12.322	   0.09033	      -10.4652
-# sigmaasc_1	-1.574501	    0.04629	       -34.013	   0.05420	      -29.0516
-# sigma_wqhuc8-0.975346	    0.06322	       -15.427	   0.07091	      -13.7552
 
+This code can be run to save the model
+
+
+```{r}
+apollo_saveOutput(model)
 ```
+
+
+The model output is:
+
+
+```{r}
+# Overview of choices for MNL model component :
+#                                      alt0     alt1
+# Times available                  17653.00 17653.00
+# Times chosen                      8732.00  8921.00
+# Percentage chosen overall           49.46    50.54
+# Percentage chosen when available    49.46    50.54
+
+# Estimated parameters with approximate standard errors from BHHH matrix:
+#                 Estimate     BHHH se BHH t-ratio (0)
+# b_cost         -0.006056  1.1014e-04       -54.97977
+# meanasc_1       0.181315     0.06191         2.92873
+# mean_wqhuc8    -0.739751     0.07237       -10.22151
+# mean_wqhuc4    -0.995286     0.09798       -10.15777
+# mean_wmed      -0.911353     0.09341        -9.75636
+# mean_wlar      -0.900097     0.09487        -9.48758
+# mean_wq4nl     -0.819531     0.06743       -12.15423
+# mean_wmednl    -0.949819     0.07698       -12.33900
+# sigmaasc_1      1.577725     0.04972        31.73158
+# sigma_wqhuc8   -0.986727     0.06298       -15.66787
+# sigma_wqhuc4   -0.658519     0.14959        -4.40211
+# sigma_wmed      0.084223     0.87511         0.09624
+# sigma_wlar     -0.171820     0.56386        -0.30472
+# sigma_wq4nl    -0.680054     0.14235        -4.77737
+# sigma_wmednl   -1.256872     0.12911        -9.73466
+# 
+# Final LL: -9453.9425
+```
+
 
 This can be compared with the model output from Vossler et al. (from Stata) , shown below:
 
 ![](images/clipboard-605873754.png)
 
-The estimated parameters are almost the same as for the ones in Vossler et al. (2023), except from one standard deviation.
+The estimated parameters are very similar, but there are some differences in the standard deviation. There are also some warning messages when running the model:
 
-There are also some warning messages where we find a saddle point instead of a optimum, and as we said during class, the reason for this is for us unknown and could be a transformation from using algoritms from stata to R.
 
 ```{r}
+# WARNING: Singular Hessian, cannot calculate s.e. 
+# Could not write hessian to a file.
 # WARNING: Some eigenvalues of the Hessian are positive, indicating convergence to a saddle point! 
+# Computing score matrix...
 ```
+
+
+This could be due to that Apollo computes the log likelihoods with different algorithms than Stata. It would probably be good to revise the model to avoid the warning messages, at least if we were to use the model in a study.
 
 ### Model for willingness to pay
 
 Using the estimated parameters from the model we can now calculate the willingness to pay for certain scenarios, as done by the authors.
+
 
 ```{r}
 ## Retrieve the parameters
@@ -234,7 +273,9 @@ model <- readRDS("Simulated Data_model.rds")
 coefficients <- as.list(model$estimate)
 ```
 
+
 First we calculate the WTP for a local spatial levels, for different BCG change scenarios. We define a function:
+
 
 ```{r}
 ## Function for local spatial scenarios, WTP
@@ -263,7 +304,9 @@ mean_wtp <- function(
 
 ```
 
+
 Then we can calculate the WTP for a local watershed (HUC4) for different BCG change scenarios
+
 
 ```{r}
 ### Calculate WTP for local sub-watershed (HUC8)
@@ -288,7 +331,9 @@ mean_wtp_wq8_bcg3 <- mean_wtp(
   v_BCG_b = 0, v_BCG_sc1 = 0, v_BCG_sc2 = 0, c_cost)
 ```
 
+
 Then we can calculate the WTP for a local watershed (HUC4) for different BCG change scenarios
+
 
 ```{r}
 ### Calculate WTP for local watershed (HUC4)
@@ -337,7 +382,9 @@ mean_wtp_wqmed_bcg3 <- mean_wtp(
   v_BCG_b, v_BCG_sc1, v_BCG_sc2, c_cost)
 ```
 
+
 Now, we calculate WTP for the full study area (local), for different BCG change scenarios (not with a function).
+
 
 ```{r}
 ## Full study area
@@ -369,7 +416,9 @@ wtp_wqlar_bcg3 <- -((
 mean_wtp_wqlar_bcg3 <- mean(wtp_wqlar_bcg3)
 ```
 
+
 Now calculate non-local scenarios. First for one watershed:
+
 
 ```{r}
 # Calculate WTP for increasing one BCG level across policy area for non-local watershed (HUC4)
@@ -394,7 +443,9 @@ wtp_wq4nl_bcg3 <- -((
 mean_wtp_wq4nl_bcg3<-mean(wtp_wq4nl_bcg3)
 ```
 
+
 Now, non-local for three watersheds:
+
 
 ```{r}
 
@@ -422,7 +473,9 @@ wtp_wqmednl_bcg3 <- -((
 mean_wtp_wqmednl_bcg3 <- mean(wtp_wqmednl_bcg3)
 ```
 
+
 Now we can summarize all WPT values in a data frame:
+
 
 ```{r}
 
@@ -454,8 +507,11 @@ rownames(mean_wtp_matrix) <- c(
 # Print the matrix
 print(mean_wtp_matrix[,1:4])
 print(mean_wtp_matrix[,5:6])
+
 ```
 
-We can now compare these values with the values from Vossler et al. (2023). The values are the same. However one question that arises are that WTP estimated values does not take into account for the individual heterogeniety, so that could be discussed going forward if that is appropriate instead of computing the estimates from the the conditional mean from the total avarage.
+
+We can now compare these values with the values from Vossler et al. (2023). The values are almost identical, and the small differences are probably due to the differences in the estimated model.
 
 ![](images/clipboard-1057870990.png)
+
